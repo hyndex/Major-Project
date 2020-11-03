@@ -19,8 +19,9 @@ class Profile(models.Model):
         return self.user.username
 
 class Charger(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)  
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)  
     address = models.CharField(max_length=150, blank=True, null=True)
+    name = models.CharField(max_length=150, blank=True, null=True)
     status = models.CharField(max_length=10, blank=True, null=True)
     date_updated = models.DateTimeField(default=dt.datetime.now(), blank=True)
     
@@ -29,7 +30,7 @@ class Charger(models.Model):
 
 
 class Bookings(models.Model):
-    user=models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile=models.ForeignKey(Profile, on_delete=models.CASCADE)
     charger=models.ForeignKey(Charger, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, blank=True, null=True)
     date_updated = models.DateTimeField(default=dt.datetime.now(), blank=True)  

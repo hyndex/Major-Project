@@ -2,8 +2,8 @@ from rest_framework import serializers
 from rest_framework import exceptions
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-# from .models import *
-# from .permissions import *
+from .models import *
+from .permissions import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,7 +30,6 @@ class ProfileSerializer(serializers.ModelSerializer):
                                 phone=validated_data.pop('phone'),
                                 address=validated_data.pop('address'),
                                 status=validated_data.pop('status'),
-                                corp= Institute.objects.get(user=self.context['request'].user)
                                 )
             return profile
         except:
@@ -41,8 +40,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 class ChargerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Charger
-        fields=('id','address','status','date_updated','user')
-        read_only_fields=('id','date_updated','user')
+        fields=('id','address','status','date_updated','profile')
+        read_only_fields=('id','date_updated','profile')
 
     def create(self, validated_data):
         user= Profile.objects.get(user=self.context['request'].user)
@@ -53,13 +52,13 @@ class ChargerSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookings
-        fields=('id','user','status','charger','date_updated')
-        read_only_fields=('date_updated','user','id',)
+        fields=('id','profile','status','charger','date_updated')
+        read_only_fields=('date_updated','profile','id',)
     
     def create(self, validated_data):
-        user= Profile.objects.get(user=self.context['request'].user)
-        charger=Charger.objects.create(user=user,**validated_data)
-        return charger
+        profile=Profile.objects.get(user=self.context['request'].user)
+        booking=Booking.objects.create(profile=profile,**validated_data)
+        return booking
 
 
 
